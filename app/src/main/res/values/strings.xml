@@ -37,6 +37,7 @@
     <string name="how_are_you_doing">How are you doing?</string>
     <string name="confirm">Confirm</string>
     <string name="selected_mood">Selected Mood</string>
+    <string name="clear_selections">Clear Selection</string>
     <string name="my_mood">My Mood</string>
     <string name="select_default_mood_to_apply_to_all_new_entries">Select default mood to apply to all new entries</string>
     <string name="my_topics">My Topics</string>
@@ -44,4 +45,5 @@
     <string name="create_new_entry_widget">Create New Entry Widget</string>
     <string name="you_don_t_have_any_topics_yet">You don\'t have any topics yet!</string>
     <string name="audio_recording_was_too_short">Audio recording was too short</string>
+    <string name="create_entry">Create Entry</string>
 </resources>
