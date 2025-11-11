@@ -1,4 +1,4 @@
-package com.plcoding.echojournal.core.presentation.designsystem.theme
+ package com.plcoding.echojournal.core.presentation.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -24,6 +24,19 @@ val Inter = FontFamily(
 )
 
 val Typography = Typography(
+
+    titleSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 22.sp,
+        color = NeutralVariant10
+    ),
+    titleMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 26.sp,
+        color = NeutralVariant10
+    ),
     labelMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,
@@ -55,26 +68,6 @@ val Typography = Typography(
         fontSize = 16.sp,
         color = NeutralVariant10
     ),
-    titleSmall = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
-        fontSize = 22.sp,
-        color = NeutralVariant10
-    ),
-    titleMedium = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
-        fontSize = 26.sp,
-        color = NeutralVariant10
-    ),
-    headlineLarge = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
-        fontSize = 28.sp
-    ),
-    headlineSmall = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Medium,
-        fontSize = 18.sp
-    )
+
+
 )
