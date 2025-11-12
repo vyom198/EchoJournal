@@ -42,7 +42,7 @@ fun <T> SelectableDropDownOptionsMenu(
     key: (T) -> Any,
     onItemClick: (Selectable<T>) -> Unit,
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable (T) -> Unit)? = null,
     dropDownOffset: IntOffset = IntOffset.Zero,
     maxDropDownHeight: Dp = Dp.Unspecified,
     dropDownExtras: SelectableOptionExtras? = null
@@ -90,7 +90,7 @@ fun <T> SelectableDropDownOptionsMenu(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        leadingIcon?.invoke()
+                        leadingIcon?.invoke(selectable.item)
                         Text(
                             text = itemDisplayText(selectable.item),
                             modifier = Modifier.weight(1f)
@@ -116,7 +116,7 @@ fun <T> SelectableDropDownOptionsMenu(
                                 },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                           Icon(
+                            Icon(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
@@ -136,8 +136,6 @@ fun <T> SelectableDropDownOptionsMenu(
         }
     }
 }
-
-
 
 @Preview
 @Composable
