@@ -1,9 +1,11 @@
 package com.plcoding.echojournal.echos.presentation.echos
 
 import com.plcoding.echojournal.echos.presentation.echos.model.EchoFilterChip
+import com.plcoding.echojournal.echos.presentation.echos.model.TrackSizeInfo
+import com.plcoding.echojournal.echos.presentation.models.MoodUi
 
 
-    sealed interface EchosAction {
+sealed interface EchosAction {
         data object OnMoodChipClick: EchosAction
         data object OnDismissMoodDropDown: EchosAction
         data class OnFilterByMoodClick(val moodUi: MoodUi): EchosAction
@@ -13,5 +15,8 @@ import com.plcoding.echojournal.echos.presentation.echos.model.EchoFilterChip
         data object OnFabClick: EchosAction
         data object OnFabLongClick: EchosAction
         data object OnSettingsClick: EchosAction
+        data object OnPauseClick : EchosAction
+        data class OnTrackSizeAvailable(val trackSizeInfo: TrackSizeInfo): EchosAction
         data class OnRemoveFilters(val filterType: EchoFilterChip): EchosAction
+        data class OnPlayEchoClick(val echoId: Int): EchosAction
     }
