@@ -1,6 +1,11 @@
 package com.plcoding.echojournal.echos.presentation.models
 
+
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.plcoding.echojournal.echos.presentation.echos.model.PlaybackState
+import com.plcoding.echojournal.echos.presentation.util.toReadableTime
+import java.time.Instant as JavaInstant
 import kotlin.time.Duration
 
 data class EchoUi(
@@ -15,6 +20,7 @@ data class EchoUi(
     val playbackCurrentDuration: Duration = Duration.ZERO,
     val playbackState: PlaybackState = PlaybackState.STOPPED
 ) {
+    @RequiresApi(Build.VERSION_CODES.O)
     val formattedRecordedAt = recordedAt.toReadableTime()
     val playbackRatio = (playbackCurrentDuration / playbackTotalDuration).toFloat()
 }
