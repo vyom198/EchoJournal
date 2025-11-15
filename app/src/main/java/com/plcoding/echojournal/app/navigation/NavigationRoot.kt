@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.plcoding.echojournal.echos.presentation.create_echo.CreateEchoRoot
 import com.plcoding.echojournal.echos.presentation.echos.EchosRoot
 import com.plcoding.echojournal.echos.presentation.util.toCreateEchoRoute
 @Composable
@@ -32,7 +33,7 @@ fun NavigationRoot(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Create Echo Screen")
+                CreateEchoRoot()
             }
         }
     }

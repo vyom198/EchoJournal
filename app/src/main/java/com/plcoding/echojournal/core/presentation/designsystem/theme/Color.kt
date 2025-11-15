@@ -4,6 +4,8 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
+
+
 val Stressed25 = Color(0xFFF9EFEF)
 val Stressed35 = Color(0xFFE9C5C5)
 val Stressed80 = Color(0xFFDE3A3A)
@@ -90,8 +92,15 @@ val ColorScheme.buttonGradientPressed: Brush
             Primary40,
         )
     )
+
 val ColorScheme.primary90: Color
     get() = Primary90
 
 val ColorScheme.primary95: Color
     get() = Primary95
+
+val ColorScheme.secondary95: Color
+    get() = Secondary95
+
+val ColorScheme.secondary70: Color
+    get() = Secondary70
