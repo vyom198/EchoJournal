@@ -1,6 +1,7 @@
  package com.plcoding.echojournal.echos.presentation.echos
 
  import android.Manifest
+ import android.content.pm.PackageManager
  import android.widget.Toast
  import androidx.activity.compose.rememberLauncherForActivityResult
  import androidx.activity.result.contract.ActivityResultContracts
@@ -19,8 +20,8 @@
  import androidx.compose.ui.Modifier
  import androidx.compose.ui.platform.LocalContext
  import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+ import androidx.core.content.ContextCompat
+ import androidx.lifecycle.compose.collectAsStateWithLifecycle
  import com.plcoding.echojournal.R
  import com.plcoding.echojournal.core.presentation.designsystem.theme.EchoJournalTheme
  import com.plcoding.echojournal.core.presentation.designsystem.theme.bgGradient
@@ -28,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
  import com.plcoding.echojournal.core.presentation.util.isAppInForeground
  import com.plcoding.echojournal.echos.presentation.echos.components.EchoFilterRow
  import com.plcoding.echojournal.echos.presentation.echos.components.EchoList
- import com.plcoding.echojournal.echos.presentation.echos.components.EchoRecordFloatingActionButton
+ import com.plcoding.echojournal.echos.presentation.echos.components.EchoQuickRecordFloatingActionButton
  import com.plcoding.echojournal.echos.presentation.echos.components.EchoRecordingSheet
  import com.plcoding.echojournal.echos.presentation.echos.components.EchosEmptyBackground
  import com.plcoding.echojournal.echos.presentation.echos.components.EchosTopBar
@@ -70,6 +71,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
              }
          }
      }
+
      val isAppInForeground by isAppInForeground()
      LaunchedEffect(isAppInForeground, state.recordingState) {
          if(state.recordingState == RecordingState.NORMAL_CAPTURE && !isAppInForeground) {
@@ -88,11 +90,31 @@ import androidx.lifecycle.viewmodel.compose.viewModel
      state: EchosState,
      onAction: (EchosAction) -> Unit,
  ) {
+     val context = LocalContext.current
      Scaffold(
          floatingActionButton = {
-             EchoRecordFloatingActionButton(
+             EchoQuickRecordFloatingActionButton(
                  onClick = {
-                     onAction(EchosAction.OnFabClick)
+                     onAction(EchosAction.OnRecordFabClick)
+                 },
+                 isQuickRecording = state.recordingState == RecordingState.QUICK_CAPTURE,
+                 onLongPressEnd = { cancelledRecording ->
+                     if(cancelledRecording) {
+                         onAction(EchosAction.OnCancelRecording)
+                     } else {
+                         onAction(EchosAction.OnCompleteRecording)
+                     }
+                 },
+                 onLongPressStart = {
+                     val hasPermission = ContextCompat.checkSelfPermission(
+                         context,
+                         Manifest.permission.RECORD_AUDIO
+                     ) == PackageManager.PERMISSION_GRANTED
+                     if(hasPermission) {
+                         onAction(EchosAction.OnRecordButtonLongClick)
+                     } else {
+                         onAction(EchosAction.OnRequestPermissionQuickRecording)
+                     }
                  }
              )
          },
