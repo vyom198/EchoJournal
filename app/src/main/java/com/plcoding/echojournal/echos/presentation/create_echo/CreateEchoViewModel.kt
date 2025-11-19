@@ -1,3 +1,4 @@
+
 package com.plcoding.echojournal.echos.presentation.create_echo
 
 import androidx.lifecycle.SavedStateHandle
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 class CreateEchoViewModel(
-    private val  savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val recordingStorage: RecordingStorage,
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
@@ -46,13 +47,31 @@ class CreateEchoViewModel(
     private val eventChannel = Channel<CreateEchoEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val _state = MutableStateFlow(CreateEchoState())
+    private val restoredTopics = savedStateHandle.get<String>("topics")?.split(",")
+    private val _state = MutableStateFlow(CreateEchoState(
+        playbackTotalDuration = recordingDetails.duration,
+        titleText = savedStateHandle["titleText"] ?: "",
+        noteText = savedStateHandle["noteText"] ?: "",
+        topics = restoredTopics ?: emptyList(),
+        mood = savedStateHandle.get<String>("mood")?.let {
+            MoodUi.valueOf(it)
+        },
+        showMoodSelector = savedStateHandle.get<String>("mood") == null,
+        canSaveEcho = savedStateHandle.get<Boolean>("canSaveEcho") == true
+    ))
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
                 observeAddTopicText()
                 hasLoadedInitialData = true
             }
+        }
+        .onEach { state ->
+            savedStateHandle["titleText"] = state.titleText
+            savedStateHandle["noteText"] = state.noteText
+            savedStateHandle["topics"] = state.topics.joinToString(",")
+            savedStateHandle["mood"] = state.mood?.name
+            savedStateHandle["canSaveEcho"] = state.canSaveEcho
         }
         .stateIn(
             scope = viewModelScope,
@@ -61,6 +80,7 @@ class CreateEchoViewModel(
         )
 
     private var durationJob: Job? = null
+
     fun onAction(action: CreateEchoAction) {
         when (action) {
             is CreateEchoAction.OnAddTopicTextChange -> onAddTopicTextChange(action.text)
@@ -68,14 +88,14 @@ class CreateEchoViewModel(
             CreateEchoAction.OnDismissMoodSelector -> onDismissMoodSelector()
             CreateEchoAction.OnDismissTopicSuggestions -> onDismissTopicSuggestions()
             is CreateEchoAction.OnMoodClick -> onMoodClick(action.moodUi)
-            is CreateEchoAction.OnNoteTextChange -> {}
+            is CreateEchoAction.OnNoteTextChange -> onNoteTextChange(action.text)
             CreateEchoAction.OnPauseAudioClick -> audioPlayer.pause()
             CreateEchoAction.OnPlayAudioClick -> onPlayAudioClick()
             is CreateEchoAction.OnRemoveTopicClick -> onRemoveTopicClick(action.topic)
             CreateEchoAction.OnSaveClick -> onSaveClick()
             is CreateEchoAction.OnTitleTextChange -> onTitleTextChange(action.text)
             is CreateEchoAction.OnTopicClick -> onTopicClick(action.topic)
-            is CreateEchoAction.OnTrackSizeAvailable -> {}
+            is CreateEchoAction.OnTrackSizeAvailable -> onTrackSizeAvailable(action.trackSizeInfo)
             CreateEchoAction.OnSelectMoodClick -> onSelectMoodClick()
             CreateEchoAction.OnDismissConfirmLeaveDialog -> onDismissConfirmLeaveDialog()
             CreateEchoAction.OnCancelClick,
@@ -84,11 +104,12 @@ class CreateEchoViewModel(
         }
     }
 
-    private fun onTitleTextChange(text: String) {
+    private fun onNoteTextChange(text: String) {
         _state.update { it.copy(
-            titleText = text
+            noteText = text
         ) }
     }
+
     private fun onPlayAudioClick() {
         if(state.value.playbackState == PlaybackState.PAUSED) {
             audioPlayer.resume()
@@ -132,6 +153,14 @@ class CreateEchoViewModel(
             ) }
         }
     }
+
+    private fun onTitleTextChange(text: String) {
+        _state.update { it.copy(
+            titleText = text,
+            canSaveEcho = text.isNotBlank() && it.mood != null
+        ) }
+    }
+
     private fun onSaveClick() {
         if(recordingDetails.filePath == null) {
             return
