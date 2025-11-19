@@ -28,13 +28,9 @@ fun NavigationRoot(
             )
         }
         composable<NavigationRoute.CreateEcho> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CreateEchoRoot()
-            }
+            CreateEchoRoot(
+                onConfirmLeave = navController::navigateUp
+            )
         }
     }
 }
