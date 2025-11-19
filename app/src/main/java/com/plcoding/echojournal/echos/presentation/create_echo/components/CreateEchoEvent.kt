@@ -3,4 +3,5 @@ package com.plcoding.echojournal.echos.presentation.create_echo.components
 
 sealed interface CreateEchoEvent {
     data object FailedToSaveFile: CreateEchoEvent
+    data object EchoSuccessfullySaved: CreateEchoEvent
 }
