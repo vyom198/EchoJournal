@@ -20,6 +20,8 @@ val echoModule = module {
     singleOf(::AndroidVoiceRecorder) bind VoiceRecorder::class
     singleOf(::InternalRecordingStorage) bind RecordingStorage::class
     singleOf(::AndroidAudioPlayer) bind AudioPlayer::class
+    singleOf(::DataStoreSettings) bind SettingsPreferences::class
+
     viewModelOf(::EchosViewModel)
     viewModelOf(::CreateEchoViewModel)
     viewModelOf(::SettingsViewModel)

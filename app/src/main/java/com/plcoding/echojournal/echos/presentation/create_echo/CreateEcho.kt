@@ -60,7 +60,7 @@ import com.plcoding.echojournal.core.presentation.designsystem.theme.secondary70
 import com.plcoding.echojournal.core.presentation.designsystem.theme.secondary95
 import com.plcoding.echojournal.core.presentation.util.ObserveAsEvents
 import com.plcoding.echojournal.echos.presentation.components.EchoMoodPlayer
-import com.plcoding.echojournal.echos.presentation.create_echo.components.CreateEchoEvent
+import com.plcoding.echojournal.echos.presentation.create_echo.CreateEchoEvent
 import com.plcoding.echojournal.echos.presentation.create_echo.components.EchoTopicsRow
 import com.plcoding.echojournal.echos.presentation.create_echo.components.SelectMoodSheet
 import com.plcoding.echojournal.echos.presentation.models.MoodUi
