@@ -26,7 +26,8 @@ class EchoJournalApp: Application() {
             androidContext(this@EchoJournalApp)
             modules(
                 appModule,
-                echoModule
+                echoModule,
+                databaseModule
             )
         }
     }
