@@ -1,17 +1,18 @@
 package com.plcoding.echojournal.core.database.echo
 
 import androidx.room.TypeConverter
+import com.plcoding.echojournal.echos.domain.echo.Mood
 import com.plcoding.echojournal.echos.presentation.models.MoodUi
 
-class MoodUiTypeConverter {
+class MoodTypeConverter {
 
     @TypeConverter
-    fun fromMood(moodUi: MoodUi): String {
-        return moodUi.name
+    fun fromMood(mood: Mood): String {
+        return mood.name
     }
 
     @TypeConverter
-    fun toMood(moodName: String): MoodUi {
-        return MoodUi.valueOf(moodName)
+    fun toMood(moodName: String): Mood {
+        return Mood.valueOf(moodName)
     }
 }
