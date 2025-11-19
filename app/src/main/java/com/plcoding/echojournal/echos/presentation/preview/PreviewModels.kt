@@ -12,7 +12,6 @@ import kotlin.time.Duration.Companion.seconds
 
 data object PreviewModels {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val echoUi = EchoUi(
         id = 0,
         title = "My audio memo",
@@ -23,6 +22,7 @@ data object PreviewModels {
         amplitudes = (1..30).map { Random.nextFloat() },
         playbackTotalDuration = 250.seconds,
         playbackCurrentDuration = 120.seconds,
-        playbackState = PlaybackState.PAUSED
+        playbackState = PlaybackState.PAUSED,
+        audioFilePath = ""
     )
 }

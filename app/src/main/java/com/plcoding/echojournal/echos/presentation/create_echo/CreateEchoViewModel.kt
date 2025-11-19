@@ -6,15 +6,22 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.plcoding.echojournal.app.navigation.NavigationRoute
 import com.plcoding.echojournal.core.presentation.designsystem.dropdowns.Selectable.Companion.asUnselectedItems
+import com.plcoding.echojournal.echos.domain.audio.AudioPlayer
 import com.plcoding.echojournal.echos.domain.recording.RecordingStorage
 import com.plcoding.echojournal.echos.presentation.create_echo.components.CreateEchoEvent
+import com.plcoding.echojournal.echos.presentation.echos.model.PlaybackState
+import com.plcoding.echojournal.echos.presentation.echos.model.TrackSizeInfo
 import com.plcoding.echojournal.echos.presentation.models.MoodUi
+import com.plcoding.echojournal.echos.presentation.util.AmplitudeNormalizer
 import com.plcoding.echojournal.echos.presentation.util.toRecordingDetails
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -23,10 +30,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class CreateEchoViewModel(
-    private val savedStateHandle: SavedStateHandle,
-    private val recordingStorage: RecordingStorage
+    private val  savedStateHandle: SavedStateHandle,
+    private val recordingStorage: RecordingStorage,
+    private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -51,6 +60,7 @@ class CreateEchoViewModel(
             initialValue = CreateEchoState()
         )
 
+    private var durationJob: Job? = null
     fun onAction(action: CreateEchoAction) {
         when (action) {
             is CreateEchoAction.OnAddTopicTextChange -> onAddTopicTextChange(action.text)
@@ -59,8 +69,8 @@ class CreateEchoViewModel(
             CreateEchoAction.OnDismissTopicSuggestions -> onDismissTopicSuggestions()
             is CreateEchoAction.OnMoodClick -> onMoodClick(action.moodUi)
             is CreateEchoAction.OnNoteTextChange -> {}
-            CreateEchoAction.OnPauseAudioClick -> {}
-            CreateEchoAction.OnPlayAudioClick ->  {}
+            CreateEchoAction.OnPauseAudioClick -> audioPlayer.pause()
+            CreateEchoAction.OnPlayAudioClick -> onPlayAudioClick()
             is CreateEchoAction.OnRemoveTopicClick -> onRemoveTopicClick(action.topic)
             CreateEchoAction.OnSaveClick -> onSaveClick()
             is CreateEchoAction.OnTitleTextChange -> onTitleTextChange(action.text)
@@ -79,7 +89,49 @@ class CreateEchoViewModel(
             titleText = text
         ) }
     }
+    private fun onPlayAudioClick() {
+        if(state.value.playbackState == PlaybackState.PAUSED) {
+            audioPlayer.resume()
+        } else {
+            audioPlayer.play(
+                filePath = recordingDetails.filePath ?: throw IllegalArgumentException(
+                    "File path can't be null"
+                ),
+                onComplete = {
+                    _state.update { it.copy(
+                        playbackState = PlaybackState.STOPPED,
+                        durationPlayed = Duration.ZERO
+                    ) }
+                }
+            )
 
+            durationJob = audioPlayer
+                .activeTrack
+                .filterNotNull()
+                .onEach { track ->
+                    _state.update { it.copy(
+                        playbackState = if(track.isPlaying) PlaybackState.PLAYING else PlaybackState.PAUSED,
+                        durationPlayed = track.durationPlayed
+                    ) }
+                }
+                .launchIn(viewModelScope)
+        }
+    }
+
+    private fun onTrackSizeAvailable(trackSizeInfo: TrackSizeInfo) {
+        viewModelScope.launch(Dispatchers.Default) {
+            val finalAmplitudes = AmplitudeNormalizer.normalize(
+                sourceAmplitudes = recordingDetails.amplitudes,
+                trackWidth = trackSizeInfo.trackWidth,
+                barWidth = trackSizeInfo.barWidth,
+                spacing = trackSizeInfo.spacing
+            )
+
+            _state.update { it.copy(
+                playbackAmplitudes = finalAmplitudes
+            ) }
+        }
+    }
     private fun onSaveClick() {
         if(recordingDetails.filePath == null) {
             return
