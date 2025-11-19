@@ -43,6 +43,7 @@
  @Composable
  fun EchosRoot(
      onNavigateToCreateEcho: (RecordingDetails) -> Unit,
+     onNavigateToSettings: () -> Unit,
      viewModel: EchosViewModel = koinViewModel()
  ) {
      val state by viewModel.state.collectAsStateWithLifecycle()
@@ -83,7 +84,13 @@
 
      EchosScreen(
          state = state,
-         onAction = viewModel::onAction
+         onAction = { action ->
+             when(action) {
+                 is EchosAction.OnSettingsClick -> onNavigateToSettings()
+                 else -> Unit
+             }
+             viewModel.onAction(action)
+         }
      )
  }
 
@@ -194,19 +201,5 @@
                  onCompleteRecording = { onAction(EchosAction.OnCompleteRecording) },
              )
          }
-     }
- }
-
- @Preview
- @Composable
- private fun Preview() {
-     EchoJournalTheme {
-         EchosScreen(
-             state = EchosState(
-                 isLoadingData = false,
-                 hasEchosRecorded = false
-             ),
-             onAction = {}
-         )
      }
  }

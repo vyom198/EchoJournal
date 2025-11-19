@@ -22,4 +22,5 @@ val echoModule = module {
     singleOf(::AndroidAudioPlayer) bind AudioPlayer::class
     viewModelOf(::EchosViewModel)
     viewModelOf(::CreateEchoViewModel)
+    viewModelOf(::SettingsViewModel)
 }

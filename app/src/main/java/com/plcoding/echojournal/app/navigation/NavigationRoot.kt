@@ -32,5 +32,10 @@ fun NavigationRoot(
                 onConfirmLeave = navController::navigateUp
             )
         }
+        composable<NavigationRoute.Settings> {
+            SettingsRoot(
+                onGoBack = navController::navigateUp
+            )
+        }
     }
 }
