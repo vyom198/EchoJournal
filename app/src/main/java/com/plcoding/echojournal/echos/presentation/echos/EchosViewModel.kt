@@ -68,8 +68,8 @@ class EchosViewModel(
         .onStart {
             if (!hasLoadedInitialData) {
                 observeFilters()
-                fetchNavigationArgs()
                 observeEchos()
+                fetchNavigationArgs()
                 hasLoadedInitialData = true
             }
         }
@@ -188,6 +188,7 @@ class EchosViewModel(
             EchosAction.OnResumeRecordingClick -> resumeRecording()
         }
     }
+
     private fun fetchNavigationArgs() {
         val startRecording = savedStateHandle["startRecording"] ?: false
         if(startRecording) {
@@ -197,6 +198,7 @@ class EchosViewModel(
             requestAudioPermission()
         }
     }
+
     private fun observeEchos() {
         combine(
             filteredEchos,
@@ -304,7 +306,18 @@ class EchosViewModel(
             if(recordingDetails.duration < MIN_RECORD_DURATION) {
                 eventChannel.send(EchosEvent.RecordingTooShort)
             } else {
-                eventChannel.send(EchosEvent.OnDoneRecording(recordingDetails))
+                eventChannel.send(EchosEvent.OnDoneRecording(
+                    details = recordingDetails.copy(
+                        // Arbitrary track dimensions to not make the app crash
+                        // when navigating and passing the amplitudes as an argument.
+                        amplitudes = AmplitudeNormalizer.normalize(
+                            sourceAmplitudes = recordingDetails.amplitudes,
+                            trackWidth = 10_000f,
+                            barWidth = 20f,
+                            spacing = 15f
+                        )
+                    )
+                ))
             }
         }
     }
