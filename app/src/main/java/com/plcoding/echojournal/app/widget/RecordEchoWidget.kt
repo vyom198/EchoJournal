@@ -1,10 +1,9 @@
 package com.plcoding.echojournal.app.widget
 
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.layout.Column
+import androidx.core.app.TaskStackBuilder
 import androidx.core.net.toUri
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -19,6 +18,7 @@ import androidx.glance.layout.Column
 import com.plcoding.echojournal.R
 import com.plcoding.echojournal.app.MainActivity
 import com.plcoding.echojournal.app.navigation.ACTION_CREATE_ECHO
+import timber.log.Timber
 
 class RecordEchoWidgetReceiver: GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
@@ -36,6 +36,7 @@ class RecordEchoWidget: GlanceAppWidget() {
                         .clickable {
                             val intent = Intent(context, MainActivity::class.java).also {
                                 it.data = "https://echojournal.com/echos/true".toUri()
+                                Timber.d(it.data.toString())
                                 it.action = ACTION_CREATE_ECHO
                             }
                             val pendingIntent = TaskStackBuilder
@@ -44,6 +45,7 @@ class RecordEchoWidget: GlanceAppWidget() {
                                 .getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
 
                             pendingIntent?.send()
+                            Timber.d("Widget clicked")
                         }
                 ) {
                     Image(
