@@ -3,9 +3,12 @@ package com.plcoding.echojournal.echos.di
 import com.plcoding.echojournal.echos.data.audio.AndroidAudioPlayer
 import com.plcoding.echojournal.echos.data.recording.AndroidVoiceRecorder
 import com.plcoding.echojournal.echos.data.recording.InternalRecordingStorage
+import com.plcoding.echojournal.echos.data.settings.DataStoreSettings
 import com.plcoding.echojournal.echos.domain.audio.AudioPlayer
 import com.plcoding.echojournal.echos.domain.recording.RecordingStorage
 import com.plcoding.echojournal.echos.domain.recording.VoiceRecorder
+import com.plcoding.echojournal.echos.domain.settings.SettingsPreferences
+import com.plcoding.echojournal.echos.presentation.Settings.SettingsViewModel
 import com.plcoding.echojournal.echos.presentation.create_echo.CreateEchoViewModel
 import com.plcoding.echojournal.echos.presentation.echos.EchosViewModel
 import org.koin.android.ext.koin.androidApplication

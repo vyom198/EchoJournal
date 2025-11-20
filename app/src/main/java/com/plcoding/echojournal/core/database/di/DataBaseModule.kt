@@ -1,6 +1,7 @@
 package com.plcoding.echojournal.core.database.di
 
 import androidx.room.Room
+import com.plcoding.echojournal.core.database.EchoDatabase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import kotlin.jvm.java

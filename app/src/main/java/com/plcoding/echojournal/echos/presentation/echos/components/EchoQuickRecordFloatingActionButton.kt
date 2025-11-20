@@ -41,7 +41,7 @@ import com.plcoding.echojournal.core.presentation.designsystem.theme.buttonGradi
 import com.plcoding.echojournal.core.presentation.designsystem.theme.buttonGradientPressed
 import com.plcoding.echojournal.core.presentation.designsystem.theme.primary90
 import com.plcoding.echojournal.core.presentation.designsystem.theme.primary95
-import com.plcoding.echojournal.echos.presentation.echos.models.rememberBubbleFloatingActionButtonColors
+import com.plcoding.echojournal.echos.presentation.echos.model.rememberBubbleFloatingActionButtonColors
 import kotlin.math.roundToInt
 
 
